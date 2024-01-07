@@ -1231,8 +1231,12 @@ def open_rasterio(
     if cache and chunks is None:
         data = indexing.MemoryCachedArray(data)
 
+    valid_dims = (coord_name, "y", "x")
+    # make sure only those dims are in coords (see #174)
+    valid_coords = {key: coords[key] for key in valid_dims}
+
     result = DataArray(
-        data=data, dims=(coord_name, "y", "x"), coords=coords, attrs=attrs, name=da_name
+        data=data, dims=valid_dims, coords=valid_coords, attrs=attrs, name=da_name
     )
     result.encoding = encoding
 
